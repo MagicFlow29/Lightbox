@@ -15,6 +15,11 @@ public protocol LightboxControllerTouchDelegate: class {
   func lightboxController(_ controller: LightboxController, didTouch image: LightboxImage, at index: Int)
 }
 
+public protocol LightboxControllerDeleteDelegate: class {
+
+  func lightboxController(_ controller: LightboxController, didDelete image: LightboxImage, at index: Int)
+}
+
 open class LightboxController: UIViewController {
 
   // MARK: - Internal views
@@ -139,6 +144,7 @@ open class LightboxController: UIViewController {
   open weak var pageDelegate: LightboxControllerPageDelegate?
   open weak var dismissalDelegate: LightboxControllerDismissalDelegate?
   open weak var imageTouchDelegate: LightboxControllerTouchDelegate?
+  open weak var imageDeleteDelegate: LightboxControllerDeleteDelegate?
   open internal(set) var presented = false
   open fileprivate(set) var seen = false
 
@@ -429,7 +435,7 @@ extension LightboxController: HeaderViewDelegate {
     }
 
     let prevIndex = currentPage
-    
+    let image = self.initialImages[prevIndex]
     self.initialImages.remove(at: prevIndex)
     
     if currentPage == numberOfPages - 1 {
@@ -446,6 +452,7 @@ extension LightboxController: HeaderViewDelegate {
       self.configureLayout(self.view.bounds.size)
       self.currentPage = Int(self.scrollView.contentOffset.x / self.view.bounds.width)
       deleteButton.isEnabled = true
+      self.imageDeleteDelegate?.lightboxController(self, didDelete: image, at: prevIndex)
     }
   }
 
