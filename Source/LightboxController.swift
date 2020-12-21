@@ -429,7 +429,9 @@ extension LightboxController: HeaderViewDelegate {
     }
 
     let prevIndex = currentPage
-
+    
+    self.initialImages.remove(at: prevIndex)
+    
     if currentPage == numberOfPages - 1 {
       previous()
     } else {
